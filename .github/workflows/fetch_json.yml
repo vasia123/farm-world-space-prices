@@ -1,0 +1,37 @@
+name: Fetch JSON
+
+on:
+  schedule:
+    - cron: '*/5 * * * *'  # Запуск каждые 5 минут
+
+jobs:
+  fetch_json:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Fetch JSON
+      run: |
+        curl -o data.json https://app.farm-world.space/tokens.php?access_token=FFGrIZyIsxIl17TaIxlBKHp7ZEZ55g
+        
+    - name: Create folder and move JSON
+      run: |
+        current_date=$(date +%Y-%m-%d)
+        current_year_month=$(date +%Y-%m)
+        current_day=$(date +%d)
+        
+        mkdir -p $current_year_month
+        mv data.json $current_year_month/$current_day.json
+        
+    - name: Commit changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add .
+        git commit -m "Update JSON data" || echo "No changes to commit"
+        
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
