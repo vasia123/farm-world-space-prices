@@ -2,36 +2,48 @@ name: Fetch JSON
 
 on:
   schedule:
-    - cron: '*/5 * * * *'
+    - cron: '*/5 * * * *'  # Запуск каждые 5 минут
 
 jobs:
   fetch_json:
     runs-on: ubuntu-latest
 
     steps:
-        - uses: actions/checkout@v4
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0  # Получаем полную историю репозитория
 
-        - name: Fetch JSON
-          run: |
-            curl -o data.json https://app.farm-world.space/tokens.php?access_token=FFGrIZyIsxIl17TaIxlBKHp7ZEZ55g
-            
-        - name: Create folder and move JSON
-          run: |
-            current_date=$(date +%Y-%m-%d)
-            current_year_month=$(date +%Y-%m)
-            current_day=$(date +%d)
-            
-            mkdir -p $current_year_month
-            mv data.json $current_year_month/$current_day.json
-            
-        - name: Commit changes
-          run: |
-            git config --local user.email "action@github.com"
-            git config --local user.name "GitHub Action"
-            git add .
-            git commit -m "Update JSON data" || echo "No changes to commit"
-            
-        - name: Push changes
-          uses: ad-m/github-push-action@master
-          with:
-            github_token: ${{ secrets.GITHUB_TOKEN }}
+    - name: Fetch JSON
+      run: |
+        curl -o data.json https://app.farm-world.space/tokens.php?access_token=FFGrIZyIsxIl17TaIxlBKHp7ZEZ55g
+        
+    - name: Create folder and append JSON
+      run: |
+        current_date=$(date +%Y-%m-%d)
+        current_year_month=$(date +%Y-%m)
+        current_day=$(date +%d)
+        
+        mkdir -p $current_year_month
+        
+        json_file="$current_year_month/$current_day.json"
+        
+        if [ -f "$json_file" ]; then
+          # Если файл существует, добавляем новые данные в массив
+          jq -s '.[0] + [.[1]]' "$json_file" data.json > temp.json
+          mv temp.json "$json_file"
+        else
+          # Если файл не существует, создаем новый файл с массивом
+          jq -s '[ .[0] ]' data.json > "$json_file"
+        fi
+        
+    - name: Commit changes
+      run: |
+        git config --local user.email "action@github.com"
+        git config --local user.name "GitHub Action"
+        git add .
+        git commit -m "Update JSON data" || echo "No changes to commit"
+        
+    - name: Push changes
+      run: |
+        git pull origin master --rebase
+        git push origin master
