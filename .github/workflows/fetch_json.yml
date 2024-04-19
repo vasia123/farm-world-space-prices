@@ -28,8 +28,11 @@ jobs:
         json_file="$current_year_month/$current_day.json"
         
         if [ -f "$json_file" ]; then
-          # Если файл существует, добавляем новые данные в массив
-          jq --slurpfile new_data data.json '$new_data[0] as $item | . + [$item]' "$json_file" > temp.json
+          # Если файл существует, читаем его содержимое
+          existing_data=$(cat "$json_file")
+          
+          # Добавляем новые данные в существующий массив
+          jq --argjson existing_data "$existing_data" --slurpfile new_data data.json '$existing_data + $new_data' > temp.json
           mv temp.json "$json_file"
         else
           # Если файл не существует, создаем новый файл с массивом
