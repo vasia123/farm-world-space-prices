@@ -1,4 +1,4 @@
-name: Fetch JSON
+name: Fetch JSON every 5 min
 
 on:
   schedule:
