@@ -29,7 +29,7 @@ jobs:
         
         if [ -f "$json_file" ]; then
           # Если файл существует, добавляем новые данные в массив
-          jq -s '.[0] + [.[1]]' "$json_file" data.json > temp.json
+          jq '. += [inputs]' "$json_file" data.json > temp.json
           mv temp.json "$json_file"
         else
           # Если файл не существует, создаем новый файл с массивом
