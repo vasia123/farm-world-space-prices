@@ -2,7 +2,7 @@ name: Fetch JSON
 
 on:
   schedule:
-    - cron: "*/15 * * * *"  # Запуск каждые 15 минут
+    - cron: '* * * * *'
 
 jobs:
   fetch_json:
