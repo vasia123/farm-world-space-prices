@@ -329,5 +329,16 @@
     "SOUP": 0.05,
     "INGOT": 0.08,
     "is_cash": false
+  },
+  {
+    "date_update": 1731762771,
+    "FOOD": 0.00010967,
+    "GOLD": 8.5e-05,
+    "WOOD": 7.26e-05,
+    "STONE": 8.333e-05,
+    "PLANKS": 0.089,
+    "SOUP": 0.05,
+    "INGOT": 0.08,
+    "is_cash": true
   }
 ]
