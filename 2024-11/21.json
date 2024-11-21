@@ -336,5 +336,16 @@
     "WOOD": "0.000090000000",
     "date_update": 1732197528,
     "is_cash": true
+  },
+  {
+    "date_update": 1732199186,
+    "FOOD": 0.00012465,
+    "GOLD": 9.8e-05,
+    "WOOD": 9e-05,
+    "STONE": 8.211e-05,
+    "PLANKS": 0.0798,
+    "SOUP": 0.04983333,
+    "INGOT": 0.037375,
+    "is_cash": true
   }
 ]
